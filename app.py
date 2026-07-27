@@ -2,14 +2,15 @@ import streamlit as st
 import pandas as pd
 import joblib
 import numpy as np
+from datetime import time
 
 # Page configuration
 st.set_page_config(page_title="WorkTrack Predictor", layout="centered")
 
-st.title("WorkTrack Predictor - Stacking Ensemble Showcase")
+st.title("WorkTrack Predictor")
 st.write("Drag the time slider to see how the Stacking Ensemble model predicts the log type in real-time.")
 
-# 1. Load the trained Stacking model
+# Load the trained Stacking model
 @st.cache_resource
 def load_model():
     return joblib.load('stacking_model.pkl')
@@ -17,41 +18,54 @@ def load_model():
 try:
     model = load_model()
     
-    st.header("24-Hour Time Simulator")
+    st.header("Time Simulator")
     
-    # Continuous slider
-    seconds_from_midnight = st.slider(
-        "Select seconds elapsed:", 
-        min_value=28800, 
-        max_value=68400, 
-        value=28800,
-        step=60
+    # HH:MM slider restricted from 08:00 to 19:00
+    user_time = st.slider(
+        "Select simulation time:",
+        min_value=time(8, 0),
+        max_value=time(19, 0),
+        value=time(8, 0),
+        format="HH:mm"
     )
 
-    # Convert seconds HH:MM format
-    hours = seconds_from_midnight // 3600
-    minutes = (seconds_from_midnight % 3600) // 60
-    st.info(f"Equivalent Time: {hours:02d}:{minutes:02d} | Feature value: {seconds_from_midnight} seconds.")
+    # Convert HH:MM back into seconds_from_midnight for X
+    seconds_from_midnight = (user_time.hour * 3600) + (user_time.minute * 60)
+    st.info(f"Feature value sent to the AI: {seconds_from_midnight} seconds elapsed since midnight.")
 
     # Create the input DataFrame for X
     input_data = pd.DataFrame([[seconds_from_midnight]], columns=['seconds_from_midnight'])
 
-    # Real-time prediction
-    prediction = model.predict(input_data)
+    # Real-time prediction (updates instantly when dragging the slider)
+    raw_prediction = model.predict(input_data)[0] # Extract the numeric prediction (0, 1, 2, or 3)
     probabilities = model.predict_proba(input_data)[0]
     
+    # Mapping dictionary to translate numbers into readable labels
+    label_map = {
+        0: "CLOCK IN",
+        1: "CLOCK OUT",
+        2: "BREAK START",
+        3: "BREAK END"
+    }
+    
+    # Convert the numerical prediction to string
+    readable_prediction = label_map.get(int(raw_prediction), f"UNKNOWN (Class {raw_prediction})")
+    
+    # Map classes for the probability labels
+    readable_classes = [label_map.get(int(c), f"Class {c}") for c in model.classes_)
+    
     # Display the final prediction output
-    st.success(f"Predicted Log Type: {str(prediction[0]).upper()}")
+    st.success(f"Predicted Log Type: {readable_prediction}")
     
     # Bar chart showing model confidence
     st.write("Stacking Ensemble Confidence Level:")
     
     prob_df = pd.DataFrame({
-        'Log Action': model.classes_,
+        'Log Action': readable_classes,
         'Probability (%)': [round(p * 100, 2) for p in probabilities]
     }).sort_values(by='Probability (%)', ascending=False)
     
     st.bar_chart(data=prob_df, x='Log Action', y='Probability (%)', use_container_width=True)
 
 except FileNotFoundError:
-    st.error("File 'stacking_model.pkl' not found in the project repository.")
+    st.error("File 'stacking_model.pkl' not found in the repository.")
