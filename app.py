@@ -27,11 +27,12 @@ try:
     
     # HH:MM slider restricted from 08:00 to 19:00
     user_time = st.slider(
-        "",
+        "Time of the day:",
         min_value=time(8, 0),
         max_value=time(19, 0),
         value=time(8, 0),
-        format="HH:mm"
+        format="HH:mm",
+        label_visibility="collapsed"
     )
 
     # Convert HH:MM back into seconds_from_midnight for X
