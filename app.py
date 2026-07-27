@@ -86,7 +86,7 @@ try:
             f"""
             <div style="
                 width: 100%; 
-                background-color: rgba(38, 39, 48, 0.2); 
+                background-color: rgba(240, 242, 246); 
                 border-radius: 4px; 
                 height: 8px; 
                 margin-bottom: 20px;
@@ -94,7 +94,7 @@ try:
             ">
                 <div style="
                     width: {percentage}%; 
-                    background-color: #ff4b4b; 
+                    background-color: #3f82da; 
                     height: 100%; 
                     border-radius: 4px;
                     transition: width 0.1s ease-in-out;
