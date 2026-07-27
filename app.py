@@ -57,15 +57,25 @@ try:
     # Display the final prediction output
     st.success(f"Predicted Log Type: {readable_prediction}")
     
-    # Bar chart showing model confidence
+       # 4. Progress Bars showing model confidence (Replacing the old bar chart)
     st.write("Stacking Ensemble Confidence Level:")
     
-    prob_df = pd.DataFrame({
-        'Log Action': readable_classes,
-        'Probability (%)': [round(p * 100, 2) for p in probabilities]
-    }).sort_values(by='Probability (%)', ascending=False)
+    # Create a clean dictionary from the arrays for direct lookup
+    prob_dict = {label_map.get(int(c), f"Class {c}"): p for c, p in zip(model.classes_, probabilities)}
     
-    st.bar_chart(data=prob_df, x='Log Action', y='Probability (%)', use_container_width=True)
+    # Define a fixed order for the rows so they don't jump around when sliding
+    fixed_order = ["CLOCK IN", "BREAK START", "BREAK END", "CLOCK OUT"]
+    
+    for action in fixed_order:
+        # Get the probability for the current action (default to 0.0 if not found)
+        prob_val = prob_dict.get(action, 0.0)
+        percentage = round(prob_val * 100, 1)
+        
+        # Display the text and the numerical percentage in a single clean row
+        st.write(f"**{action}** ({percentage}%)")
+        
+        # Display the horizontal progress bar (st.progress accepts values from 0.0 to 1.0)
+        st.progress(float(prob_val))
 
 except FileNotFoundError:
     st.error("File 'stacking_model.pkl' not found in the repository.")
