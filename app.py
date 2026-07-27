@@ -23,7 +23,7 @@ def load_model():
 try:
     model = load_model()
     
-    st.header("Time Simulator")
+    st.subheader("Time Simulator")
     
     # HH:MM slider restricted from 08:00 to 19:00
     user_time = st.slider(
@@ -62,13 +62,13 @@ try:
     # Display the final prediction output
     st.success(f"Predicted Log Type: {readable_prediction}")
     
-       # 4. Progress Bars showing model confidence (Replacing the old bar chart)
-    st.header("Stacking Ensemble Confidence Level:")
+    # Progress bars showing model confidence
+    st.subheader("Stacking Ensemble Confidence Level:")
     
-    # Create a clean dictionary from the arrays for direct lookup
+    # Create a dictionary from the arrays for direct lookup
     prob_dict = {label_map.get(int(c), f"Class {c}"): p for c, p in zip(model.classes_, probabilities)}
     
-    # Define a fixed order for the rows so they don't jump around when sliding
+    # Define a fixed order for the rows
     fixed_order = ["CLOCK IN", "BREAK START", "BREAK END", "CLOCK OUT"]
     
     for action in fixed_order:
@@ -79,7 +79,7 @@ try:
         # Display the text and the numerical percentage in a single clean row
         st.write(f"**{action}** ({percentage}%)")
         
-        # Display the horizontal progress bar (st.progress accepts values from 0.0 to 1.0)
+        # Display the horizontal progress bar
         st.progress(float(prob_val))
 
 except FileNotFoundError:
