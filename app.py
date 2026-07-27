@@ -22,7 +22,7 @@ try:
     
     # HH:MM slider restricted from 08:00 to 19:00
     user_time = st.slider(
-        "Select simulation time:",
+        "Time of the day:",
         min_value=time(8, 0),
         max_value=time(19, 0),
         value=time(8, 0),
@@ -58,7 +58,7 @@ try:
     st.success(f"Predicted Log Type: {readable_prediction}")
     
        # 4. Progress Bars showing model confidence (Replacing the old bar chart)
-    st.write("Stacking Ensemble Confidence Level:")
+    st.header("Stacking Ensemble Confidence Level:")
     
     # Create a clean dictionary from the arrays for direct lookup
     prob_dict = {label_map.get(int(c), f"Class {c}"): p for c, p in zip(model.classes_, probabilities)}
