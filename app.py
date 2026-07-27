@@ -82,6 +82,7 @@ try:
         # Display the text and the numerical percentage in a single clean row
         st.write(f"**{action}** ({percentage}%)")
 
+        # Display the horizontal progress bar
         st.markdown(
             f"""
             <div style="
@@ -103,9 +104,6 @@ try:
             """,
             unsafe_allow_html=True
         )
-        
-        # Display the horizontal progress bar
-        st.progress(float(prob_val))
 
     # Copyright
     st.markdown(
