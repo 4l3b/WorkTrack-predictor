@@ -83,7 +83,7 @@ try:
         st.write(f"**{action}** ({percentage}%)")
 
         if prob_val >= 0.98:
-            visual_bar_val = 1.05
+            visual_bar_val = 1.50
         else:
             visual_bar_val = float(prob_val)
         
