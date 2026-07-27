@@ -9,25 +9,30 @@ st.set_page_config(page_title="WorkTrack Log Predictor", layout="centered")
 
 st.title("WorkTrack Log Predictor")
 
-# Force 100% progress bars to fully fill the right edge by squaring the right corners
+# Eliminate the persistent whitespace gap at the right edge of 100% progress bars
 st.markdown(
     """
     <style>
-        /* Targets the active fill bar across modern web engines */
-        div[data-testid="stProgress"] div[role="progressbar"] > div {
-            border-top-right-radius: 0px !important;
-            border-bottom-right-radius: 0px !important;
-            width: 100% !important;
+        /* Remaps the entire internal structure of the progress bar component */
+        div[data-testid="stProgress"] > div {
+            padding-right: 0px !important;
+            margin-right: 0px !important;
         }
-        /* Extra safety reset for underlying webkit engines */
-        div[data-testid="stProgress"] progress::-webkit-progress-value {
-            border-top-right-radius: 0px !important;
-            border-bottom-right-radius: 0px !important;
+        div[data-testid="stProgress"] div[role="progressbar"] {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        div[data-testid="stProgress"] div[role="progressbar"] > div {
+            width: 100% !important;
+            border-radius: 0px !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
     </style>
     """,
     unsafe_allow_html=True
 )
+
 
 
 st.write("""
