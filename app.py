@@ -38,10 +38,10 @@ try:
 
     # Real-time prediction
     prediction = model.predict(input_data)
-    probabilities = model.predict_proba(input_data)
+    probabilities = model.predict_proba(input_data)[0]
     
     # Display the final prediction output
-    st.success(f"Predicted Log Type: {str(prediction).upper()}")
+    st.success(f"Predicted Log Type: {str(prediction[0]).upper()}")
     
     # Bar chart showing model confidence
     st.write("Stacking Ensemble Confidence Level:")
