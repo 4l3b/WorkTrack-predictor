@@ -98,7 +98,7 @@ try:
                     background-color: #3f82da; 
                     height: 100%; 
                     border-radius: 4px;
-                    transition: width 0.1s ease-in-out;
+                    transition: width 0.3s ease-in-out;
                 "></div>
             </div>
             """,
