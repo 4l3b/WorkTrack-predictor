@@ -83,5 +83,15 @@ try:
         # Display the horizontal progress bar
         st.progress(float(prob_val))
 
+    # Copyright
+    st.markdown(
+        """
+        <div style='text-align: center; margin-top: 5rem; font-size: 0.8rem; color: #777777;'>
+            &copy; 2026 Alessandro Bigolin
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
+
 except FileNotFoundError:
     st.error("File 'stacking_model.pkl' not found in the repository.")
