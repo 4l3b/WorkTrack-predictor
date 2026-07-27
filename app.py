@@ -52,7 +52,7 @@ try:
     readable_prediction = label_map.get(int(raw_prediction), f"UNKNOWN (Class {raw_prediction})")
     
     # Map classes for the probability labels
-    readable_classes = [label_map.get(int(c), f"Class {c}") for c in model.classes_)
+    readable_classes = [label_map.get(int(c), f"Class {c}") for c in model.classes_]
     
     # Display the final prediction output
     st.success(f"Predicted Log Type: {readable_prediction}")
