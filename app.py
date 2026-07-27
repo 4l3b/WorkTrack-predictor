@@ -82,10 +82,27 @@ try:
         # Display the text and the numerical percentage in a single clean row
         st.write(f"**{action}** ({percentage}%)")
 
-        if prob_val >= 0.98:
-            visual_bar_val = 1.50
-        else:
-            visual_bar_val = float(prob_val)
+        st.markdown(
+            f"""
+            <div style="
+                width: 100%; 
+                background-color: rgba(38, 39, 48, 0.2); 
+                border-radius: 4px; 
+                height: 8px; 
+                margin-bottom: 20px;
+                overflow: hidden;
+            ">
+                <div style="
+                    width: {percentage}%; 
+                    background-color: #ff4b4b; 
+                    height: 100%; 
+                    border-radius: 4px;
+                    transition: width 0.1s ease-in-out;
+                "></div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
         
         # Display the horizontal progress bar
         st.progress(float(prob_val))
