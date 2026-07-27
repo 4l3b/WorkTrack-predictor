@@ -42,10 +42,10 @@ try:
     
     # Mapping dictionary to translate numbers into readable labels
     label_map = {
-        0: "CLOCK IN",
-        1: "CLOCK OUT",
-        2: "BREAK START",
-        3: "BREAK END"
+        0: "BREAK END",
+        1: "BREAK START",
+        2: "CLOCK IN",
+        3: "CLOCK OUT"
     }
     
     # Convert the numerical prediction to string
