@@ -27,6 +27,7 @@ try:
     
     # HH:MM slider restricted from 08:00 to 19:00
     user_time = st.slider(
+        "",
         min_value=time(8, 0),
         max_value=time(19, 0),
         value=time(8, 0),
