@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import joblib
 import numpy as np
-from datetime import time
+from datetime import time, timedelta
 
 # Page configuration
 st.set_page_config(page_title="WorkTrack Log Predictor", layout="centered")
@@ -31,6 +31,7 @@ try:
         min_value=time(8, 0),
         max_value=time(19, 0),
         value=time(8, 0),
+        step=timedelta(minutes=5),
         format="HH:mm",
         label_visibility="collapsed"
     )
