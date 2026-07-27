@@ -23,11 +23,10 @@ def load_model():
 try:
     model = load_model()
     
-    st.subheader("Time Simulator")
+    st.subheader("Time of the day")
     
     # HH:MM slider restricted from 08:00 to 19:00
     user_time = st.slider(
-        "Time of the day:",
         min_value=time(8, 0),
         max_value=time(19, 0),
         value=time(8, 0),
@@ -41,7 +40,7 @@ try:
     # Create the input DataFrame for X
     input_data = pd.DataFrame([[seconds_from_midnight]], columns=['seconds_from_midnight'])
 
-    # Real-time prediction (updates instantly when dragging the slider)
+    # Real-time prediction
     raw_prediction = model.predict(input_data)[0] # Extract the numeric prediction (0, 1, 2, or 3)
     probabilities = model.predict_proba(input_data)[0]
     
