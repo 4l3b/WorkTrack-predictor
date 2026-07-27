@@ -23,7 +23,7 @@ def load_model():
 try:
     model = load_model()
     
-    st.subheader("Time of the day")
+    st.subheader("Time of the day:")
     
     # HH:MM slider restricted from 08:00 to 19:00
     user_time = st.slider(
