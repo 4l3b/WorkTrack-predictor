@@ -14,9 +14,9 @@ This project applies machine learning to a dataset of work time logs generated b
 (https://github.com/4l3b/WorkTrack). A polynomial logistic regression classifier was trained to predict whether a specific time of day 
 is most likely to correspond to a clock in, break start, break end, or clock out event.
 """)
-st.write("Drag the time slider to see how the Stacking Ensemble model predicts the log type in real-time.")
+st.write("Drag the time slider to see how the model predicts the log type in real-time.")
 
-# Load the trained Stacking model
+# Load the trained model
 @st.cache_resource
 def load_model():
     return joblib.load('model.pkl')
@@ -66,7 +66,7 @@ try:
     st.success(f"Predicted Log Type: {readable_prediction}")
     
     # Progress bars showing model confidence
-    st.subheader("Stacking Ensemble Confidence Level:")
+    st.subheader("Model Confidence Level:")
     
     # Create a dictionary from the arrays for direct lookup
     prob_dict = {label_map.get(int(c), f"Class {c}"): p for c, p in zip(model.classes_, probabilities)}
