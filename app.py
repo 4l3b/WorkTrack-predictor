@@ -19,7 +19,7 @@ st.write("Drag the time slider to see how the Stacking Ensemble model predicts t
 # Load the trained Stacking model
 @st.cache_resource
 def load_model():
-    return joblib.load('stacking_model.pkl')
+    return joblib.load('model.pkl')
 
 try:
     model = load_model()
@@ -116,4 +116,4 @@ try:
     )
 
 except FileNotFoundError:
-    st.error("File 'stacking_model.pkl' not found in the repository.")
+    st.error("File 'model.pkl' not found in the repository.")
