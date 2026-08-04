@@ -21,7 +21,7 @@ Given a selected time, the model predicts the most likely event:
 
 The application also displays the probability assigned to each class.
 
-<img src="streamlit_app.png" alt="App interface" width="35%">
+<img src="streamlitapp.png" alt="App interface" width="35%">
 
 ---
 
