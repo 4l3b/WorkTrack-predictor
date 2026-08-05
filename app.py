@@ -142,6 +142,12 @@ def generate_decision_surface(_model, _le):
             xanchor="right",
             yanchor="top"
         ),
+        margin=dict(
+            l=0,
+            r=0,
+            t=10,
+            b=0
+        ),
         uirevision="constant"
     )
 
@@ -237,7 +243,7 @@ try:
 
     with right_col:
 
-        st.markdown("<h3 style='margin-bottom: -4em;'>Current position in the decision space</h3>", unsafe_allow_html=True)
+        st.subheader("Current position in the decision space")
         
         prediction_color = {
             "clockIn": "blue",
