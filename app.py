@@ -1,8 +1,10 @@
-import streamlit as st
-import pandas as pd
 import joblib
 import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
 from datetime import time, timedelta
+from skimage.measure import marching_cubes
 
 # Page configuration
 st.set_page_config(page_title="WorkTrack Log Predictor", layout="centered")
@@ -21,6 +23,88 @@ st.write("Drag the time slider to see how the model predicts the log type in rea
 def load_model():
     artifact = joblib.load('model.pkl')
     return artifact["model"], artifact["label_encoder"]
+
+@st.cache_data
+def generate_decision_surface(_model, _le):
+
+    hours = np.linspace(8, 19, 40)
+    minutes = np.linspace(0, 59, 40)
+    seconds = np.linspace(0, 59, 20)
+
+    grid = np.array(
+        np.meshgrid(hours, minutes, seconds, indexing="ij")
+    ).reshape(3, -1).T
+
+    grid_df = pd.DataFrame(
+        grid,
+        columns=["hour", "minute", "second"]
+    )
+
+    predictions = _model.predict(grid_df)
+
+    volume = predictions.reshape(
+        len(hours),
+        len(minutes),
+        len(seconds)
+    )
+
+    fig = go.Figure()
+
+    colors = {
+        "clockIn": "blue",
+        "clockOut": "red",
+        "breakStart": "green",
+        "breakEnd": "purple"
+    }
+
+
+    for cls in np.unique(predictions):
+    
+        binary = (volume == cls).astype(float)
+    
+        if binary.min() == binary.max():
+            continue
+    
+        try:
+            verts, faces, _, _ = marching_cubes(
+                binary,
+                level=0.5
+            )
+        except ValueError:
+            continue
+
+        label = _le.inverse_transform([int(cls)])[0]
+
+        fig.add_trace(
+            go.Mesh3d(
+                x=verts[:,0] * (hours[-1]-hours[0])/(len(hours)-1)+hours[0],
+                y=verts[:,1] * (minutes[-1]-minutes[0])/(len(minutes)-1)+minutes[0],
+                z=verts[:,2] * (seconds[-1]-seconds[0])/(len(seconds)-1)+seconds[0],
+
+                i=faces[:,0],
+                j=faces[:,1],
+                k=faces[:,2],
+
+                opacity=0.35,
+                color=colors.get(label, "gray"),
+                name=label
+            )
+        )
+
+
+    fig.update_layout(
+        title="Classifier decision boundaries",
+        scene=dict(
+            xaxis_title="Hour",
+            yaxis_title="Minute",
+            zaxis_title="Second"
+        ),
+        height=700
+    )
+
+    return fig
+
+
 
 try:
     model, le = load_model()
@@ -102,6 +186,70 @@ try:
             """,
             unsafe_allow_html=True
         )
+
+
+
+
+    st.divider()
+
+    st.subheader("Current position in the decision space")
+    
+    
+    fig = generate_decision_surface(model, le)
+    
+    
+    prediction_color = {
+        "clockIn": "blue",
+        "clockOut": "red",
+        "breakStart": "green",
+        "breakEnd": "purple",
+        "CLOCK IN": "blue",
+        "CLOCK OUT": "red",
+        "BREAK START": "green",
+        "BREAK END": "purple"
+    }.get(readable_prediction, "black")
+    
+    
+    fig.add_trace(
+        go.Scatter3d(
+            x=[hour],
+            y=[minute],
+            z=[second],
+    
+            mode="markers",
+    
+            marker=dict(
+                size=12,
+                color=prediction_color,
+                line=dict(
+                    color="white",
+                    width=2
+                )
+            ),
+    
+            name="Selected time",
+    
+            hovertemplate=
+            (
+                "<b>Selected time</b><br>"
+                f"Prediction: {readable_prediction}<br>"
+                "Hour: %{x}<br>"
+                "Minute: %{y}<br>"
+                "Second: %{z}"
+                "<extra></extra>"
+            )
+        )
+    )
+    
+    
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+
+
+
 
     # Copyright
     st.markdown(
