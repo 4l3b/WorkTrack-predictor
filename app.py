@@ -115,7 +115,7 @@ def generate_decision_surface(_model, _le):
             z=[None],
             mode="markers",
             marker=dict(
-                size=14,
+                size=10,
                 color="white",
                 line=dict(
                     color="black",
