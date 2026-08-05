@@ -272,7 +272,7 @@ try:
     # Copyright
     st.markdown(
         """
-        <div style='text-align: center; margin-top: 4rem; font-size: 0.8rem; color: #777777;'>
+        <div style='text-align: center; margin-top: 2rem; font-size: 0.8rem; color: #777777;'>
             &copy; 2026 Alessandro Bigolin
         </div>
         """, 
