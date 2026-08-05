@@ -243,7 +243,7 @@ try:
 
     with right_col:
 
-        st.subheader("Current position in the decision space")
+        st.subheader("Current position in the decision space:")
         
         prediction_color = {
             "clockIn": "blue",
@@ -278,7 +278,7 @@ try:
     # Copyright
     st.markdown(
         """
-        <div style='text-align: center; margin-top: 2em; font-size: 0.8rem; color: #777777;'>
+        <div style='text-align: center; margin-top: 4em; font-size: 0.8rem; color: #777777;'>
             &copy; 2026 Alessandro Bigolin
         </div>
         """, 
