@@ -87,7 +87,8 @@ def generate_decision_surface(_model, _le):
 
                 opacity=0.35,
                 color=colors.get(label, "gray"),
-                name=label
+                name=label,
+                showlegend=True
             )
         )
 
@@ -99,7 +100,12 @@ def generate_decision_surface(_model, _le):
             yaxis_title="Minute",
             zaxis_title="Second"
         ),
-        height=700
+        height=700,
+        legend=dict(
+        title="Log type",
+        x=0,
+        y=1
+    )
     )
 
     return fig
@@ -108,144 +114,146 @@ def generate_decision_surface(_model, _le):
 
 try:
     model, le = load_model()
-    
-    st.subheader("Time of the day:")
-    
-    # HH:MM slider restricted from 08:00 to 19:00
-    user_time = st.slider(
-        "Time of the day:",
-        min_value=time(8, 0),
-        max_value=time(19, 0),
-        value=time(8, 0),
-        step=timedelta(seconds=1),
-        format="HH:mm:ss",
-        label_visibility="collapsed"
-    )
 
-    # Convert selected time into model features
-    hour = user_time.hour
-    minute = user_time.minute
-    second = user_time.second
-    st.info(f"Model input features → Hour: {hour:02d} | Minute: {minute:02d} | Second: {second:02d}")
-    input_data = pd.DataFrame([[hour, minute, second]], columns=["hour", "minute", "second"])
+    left_col, right_col = st.columns([1, 2])
 
-    # Real-time prediction
-    raw_prediction = model.predict(input_data)[0]
-    probabilities = model.predict_proba(input_data)[0]
+    with left_col:
     
-    # Convert the numerical prediction to string
-    readable_prediction = le.inverse_transform([raw_prediction])[0]
-    
-    # Display the final prediction output
-    st.success(f"Predicted Log Type: {readable_prediction}")
-    
-    # Progress bars showing model confidence
-    st.subheader("Model Confidence Level:")
-    
-    # Convert model class names into readable labels
-    label_display_map = {
-        "clockIn": "CLOCK IN",
-        "clockOut": "CLOCK OUT",
-        "breakStart": "BREAK START",
-        "breakEnd": "BREAK END"
-    }
-    
-    # Create a dictionary from the arrays for direct lookup
-    prob_dict = {label_display_map.get(le.inverse_transform([int(c)])[0], "UNKNOWN"): p for c, p in zip(model.classes_, probabilities)}
-    
-    # Define a fixed order for the rows
-    fixed_order = ["CLOCK IN", "BREAK START", "BREAK END", "CLOCK OUT"]
-    
-    for action in fixed_order:
-        # Get the probability for the current action (default to 0.0 if not found)
-        prob_val = prob_dict.get(action, 0.0)
-        percentage = round(prob_val * 100, 1)
+        st.subheader("Time of the day:")
         
-        # Display the text and the numerical percentage in a single clean row
-        st.write(f"**{action}** ({percentage}%)")
-
-        # Display the horizontal progress bar
-        st.markdown(
-            f"""
-            <div style="
-                width: 100%; 
-                background-color: rgba(240, 242, 246); 
-                border-radius: 4px; 
-                height: 8px; 
-                margin-bottom: 20px;
-                overflow: hidden;
-            ">
-                <div style="
-                    width: {percentage}%; 
-                    background-color: #3f82da; 
-                    height: 100%; 
-                    border-radius: 4px;
-                    transition: width 0.3s ease-in-out;
-                "></div>
-            </div>
-            """,
-            unsafe_allow_html=True
+        # HH:MM slider restricted from 08:00 to 19:00
+        user_time = st.slider(
+            "Time of the day:",
+            min_value=time(8, 0),
+            max_value=time(19, 0),
+            value=time(8, 0),
+            step=timedelta(seconds=1),
+            format="HH:mm:ss",
+            label_visibility="collapsed"
         )
+    
+        # Convert selected time into model features
+        hour = user_time.hour
+        minute = user_time.minute
+        second = user_time.second
+        st.info(f"Model input features → Hour: {hour:02d} | Minute: {minute:02d} | Second: {second:02d}")
+        input_data = pd.DataFrame([[hour, minute, second]], columns=["hour", "minute", "second"])
+    
+        # Real-time prediction
+        raw_prediction = model.predict(input_data)[0]
+        probabilities = model.predict_proba(input_data)[0]
+        
+        # Convert the numerical prediction to string
+        readable_prediction = le.inverse_transform([raw_prediction])[0]
+        
+        # Display the final prediction output
+        st.success(f"Predicted Log Type: {readable_prediction}")
+        
+        # Progress bars showing model confidence
+        st.subheader("Model Confidence Level:")
+        
+        # Convert model class names into readable labels
+        label_display_map = {
+            "clockIn": "CLOCK IN",
+            "clockOut": "CLOCK OUT",
+            "breakStart": "BREAK START",
+            "breakEnd": "BREAK END"
+        }
+        
+        # Create a dictionary from the arrays for direct lookup
+        prob_dict = {label_display_map.get(le.inverse_transform([int(c)])[0], "UNKNOWN"): p for c, p in zip(model.classes_, probabilities)}
+        
+        # Define a fixed order for the rows
+        fixed_order = ["CLOCK IN", "BREAK START", "BREAK END", "CLOCK OUT"]
+        
+        for action in fixed_order:
+            # Get the probability for the current action (default to 0.0 if not found)
+            prob_val = prob_dict.get(action, 0.0)
+            percentage = round(prob_val * 100, 1)
+            
+            # Display the text and the numerical percentage in a single clean row
+            st.write(f"**{action}** ({percentage}%)")
+    
+            # Display the horizontal progress bar
+            st.markdown(
+                f"""
+                <div style="
+                    width: 100%; 
+                    background-color: rgba(240, 242, 246); 
+                    border-radius: 4px; 
+                    height: 8px; 
+                    margin-bottom: 20px;
+                    overflow: hidden;
+                ">
+                    <div style="
+                        width: {percentage}%; 
+                        background-color: #3f82da; 
+                        height: 100%; 
+                        border-radius: 4px;
+                        transition: width 0.3s ease-in-out;
+                    "></div>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+    
 
+    with right_col:
 
-
-
-    st.divider()
-
-    st.subheader("Current position in the decision space")
-    
-    
-    fig = generate_decision_surface(model, le)
-    
-    
-    prediction_color = {
-        "clockIn": "blue",
-        "clockOut": "red",
-        "breakStart": "green",
-        "breakEnd": "purple",
-        "CLOCK IN": "blue",
-        "CLOCK OUT": "red",
-        "BREAK START": "green",
-        "BREAK END": "purple"
-    }.get(readable_prediction, "black")
-    
-    
-    fig.add_trace(
-        go.Scatter3d(
-            x=[hour],
-            y=[minute],
-            z=[second],
-    
-            mode="markers",
-    
-            marker=dict(
-                size=12,
-                color=prediction_color,
-                line=dict(
-                    color="white",
-                    width=2
+        st.subheader("Current position in the decision space")
+        
+        
+        fig = generate_decision_surface(model, le)
+        
+        
+        prediction_color = {
+            "clockIn": "blue",
+            "clockOut": "red",
+            "breakStart": "green",
+            "breakEnd": "purple",
+            "CLOCK IN": "blue",
+            "CLOCK OUT": "red",
+            "BREAK START": "green",
+            "BREAK END": "purple"
+        }.get(readable_prediction, "black")
+        
+        
+        fig.add_trace(
+            go.Scatter3d(
+                x=[hour],
+                y=[minute],
+                z=[second],
+        
+                mode="markers",
+        
+                marker=dict(
+                    size=12,
+                    color=prediction_color,
+                    line=dict(
+                        color="white",
+                        width=2
+                    )
+                ),
+        
+                name="Selected time",
+        
+                hovertemplate=
+                (
+                    "<b>Selected time</b><br>"
+                    f"Prediction: {readable_prediction}<br>"
+                    "Hour: %{x}<br>"
+                    "Minute: %{y}<br>"
+                    "Second: %{z}"
+                    "<extra></extra>"
                 )
-            ),
-    
-            name="Selected time",
-    
-            hovertemplate=
-            (
-                "<b>Selected time</b><br>"
-                f"Prediction: {readable_prediction}<br>"
-                "Hour: %{x}<br>"
-                "Minute: %{y}<br>"
-                "Second: %{z}"
-                "<extra></extra>"
             )
         )
-    )
-    
-    
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+        
+        
+        st.plotly_chart(
+            fig,
+            use_container_width=True
+        )
 
 
 
