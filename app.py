@@ -135,9 +135,11 @@ def generate_decision_surface(_model, _le):
         height=700,
         legend=dict(
             title="Log type",
-            x=0,
-            y=1
-        ),
+            x=1,
+            y=1,
+            xanchor="right",
+            yanchor="top"
+        )
         uirevision="constant"
     )
 
