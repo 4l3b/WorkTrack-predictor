@@ -262,7 +262,7 @@ try:
         st.plotly_chart(
             fig,
             use_container_width=False,
-            height=550
+            height=600
         )
 
 
