@@ -124,11 +124,7 @@ def generate_decision_surface(_model, _le):
             title="Log type",
             x=0,
             y=1
-        ),
-        transition=dict(
-            duration=300,
-            easing="cubic-in-out"
-        ),
+        )
         uirevision="constant"
     )
 
@@ -237,7 +233,7 @@ try:
             "BREAK END": "purple"
         }.get(readable_prediction, "black")
         
-        fig = generate_decision_surface(model, le).full_copy()
+        fig = generate_decision_surface(model, le)
         point_trace = fig.data[-1]
         point_trace.marker.color = prediction_color
         
