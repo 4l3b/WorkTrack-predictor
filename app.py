@@ -34,7 +34,7 @@ try:
         max_value=time(19, 0),
         value=time(8, 0),
         step=timedelta(seconds=1),
-        format="HH:mm",
+        format="HH:mm:ss",
         label_visibility="collapsed"
     )
 
