@@ -129,7 +129,6 @@ def generate_decision_surface(_model, _le):
 
 
     fig.update_layout(
-        title="Classifier decision boundaries",
         scene=dict(
             xaxis_title="Hour",
             yaxis_title="Minute",
