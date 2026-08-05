@@ -124,7 +124,7 @@ def generate_decision_surface(_model, _le):
             title="Log type",
             x=0,
             y=1
-        )
+        ),
         uirevision="constant"
     )
 
