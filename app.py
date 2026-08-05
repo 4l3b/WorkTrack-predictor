@@ -135,7 +135,7 @@ def generate_decision_surface(_model, _le):
             yaxis_title="Minute",
             zaxis_title="Second"
         ),
-        height=500,
+        height=700,
         legend=dict(
             title="Log type",
             x=1,
@@ -262,8 +262,8 @@ try:
         
         st.plotly_chart(
             fig,
-            use_container_width=True,
-            height=750
+            use_container_width=False,
+            height=550
         )
 
 
