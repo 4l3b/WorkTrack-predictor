@@ -7,7 +7,7 @@ from datetime import time, timedelta
 from skimage.measure import marching_cubes
 
 # Page configuration
-st.set_page_config(page_title="WorkTrack Log Predictor", layout="centered")
+st.set_page_config(page_title="WorkTrack Log Predictor", layout="wide")
 
 st.title("WorkTrack Log Predictor")
 
@@ -135,7 +135,7 @@ def generate_decision_surface(_model, _le):
 try:
     model, le = load_model()
 
-    left_col, right_col = st.columns([1, 4])
+    left_col, right_col = st.columns([1, 2])
 
     with left_col:
     
