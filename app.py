@@ -24,7 +24,7 @@ def load_model():
     artifact = joblib.load('model.pkl')
     return artifact["model"], artifact["label_encoder"]
 
-@st.cache_data
+@st.cache_resource
 def generate_decision_surface(_model, _le):
 
     hours = np.linspace(8, 19, 40)
@@ -92,6 +92,25 @@ def generate_decision_surface(_model, _le):
             )
         )
 
+    fig.add_trace(
+        go.Scatter3d(
+            x=[None],
+            y=[None],
+            z=[None],
+            mode="markers",
+            marker=dict(
+                size=14,
+                color="white",
+                line=dict(
+                    color="black",
+                    width=2
+                )
+            ),
+            name="Selected time",
+            showlegend=True
+        )
+    )
+
 
     fig.update_layout(
         title="Classifier decision boundaries",
@@ -102,10 +121,15 @@ def generate_decision_surface(_model, _le):
         ),
         height=700,
         legend=dict(
-        title="Log type",
-        x=0,
-        y=1
-    )
+            title="Log type",
+            x=0,
+            y=1
+        ),
+        transition=dict(
+            duration=300,
+            easing="cubic-in-out"
+        ),
+        uirevision="constant"
     )
 
     return fig
@@ -202,10 +226,6 @@ try:
 
         st.subheader("Current position in the decision space")
         
-        
-        fig = generate_decision_surface(model, le)
-        
-        
         prediction_color = {
             "clockIn": "blue",
             "clockOut": "red",
@@ -217,37 +237,13 @@ try:
             "BREAK END": "purple"
         }.get(readable_prediction, "black")
         
+        fig = generate_decision_surface(model, le).full_copy()
+        point_trace = fig.data[-1]
+        point_trace.marker.color = prediction_color
         
-        fig.add_trace(
-            go.Scatter3d(
-                x=[hour],
-                y=[minute],
-                z=[second],
-        
-                mode="markers",
-        
-                marker=dict(
-                    size=12,
-                    color=prediction_color,
-                    line=dict(
-                        color="white",
-                        width=2
-                    )
-                ),
-        
-                name="Selected time",
-        
-                hovertemplate=
-                (
-                    "<b>Selected time</b><br>"
-                    f"Prediction: {readable_prediction}<br>"
-                    "Hour: %{x}<br>"
-                    "Minute: %{y}<br>"
-                    "Second: %{z}"
-                    "<extra></extra>"
-                )
-            )
-        )
+        point_trace.x = [hour]
+        point_trace.y = [minute]
+        point_trace.z = [second]
         
         
         st.plotly_chart(
