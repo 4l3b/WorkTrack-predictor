@@ -19,10 +19,11 @@ st.write("Drag the time slider to see how the model predicts the log type in rea
 # Load the trained model
 @st.cache_resource
 def load_model():
-    return joblib.load('model.pkl')
+    artifact = joblib.load('model.pkl')
+    return artifact["model"], artifact["label_encoder"]
 
 try:
-    model = load_model()
+    model, le = load_model()
     
     st.subheader("Time of the day:")
     
@@ -32,32 +33,24 @@ try:
         min_value=time(8, 0),
         max_value=time(19, 0),
         value=time(8, 0),
-        step=timedelta(minutes=5),
+        step=timedelta(seconds=1),
         format="HH:mm",
         label_visibility="collapsed"
     )
 
-    # Convert HH:MM back into seconds_from_midnight for X
-    seconds_from_midnight = (user_time.hour * 3600) + (user_time.minute * 60)
-    st.info(f"Feature value sent to the AI: {seconds_from_midnight} seconds elapsed since midnight.")
-
-    # Create the input DataFrame for X
-    input_data = pd.DataFrame([[seconds_from_midnight]], columns=['seconds_from_midnight'])
+    # Convert selected time into model features
+    hour = user_time.hour
+    minute = user_time.minute
+    second = user_time.second
+    st.info(f"Model input features → Hour: {hour:02d} | Minute: {minute:02d} | Second: {second:02d}")
+    input_data = pd.DataFrame([[hour, minute, second]], columns=["hour", "minute", "second"])
 
     # Real-time prediction
-    raw_prediction = model.predict(input_data)[0] # Extract the numeric prediction (0, 1, 2, or 3)
+    raw_prediction = model.predict(input_data)[0]
     probabilities = model.predict_proba(input_data)[0]
     
-    # Mapping dictionary to translate numbers into readable labels
-    label_map = {
-        0: "BREAK END",
-        1: "BREAK START",
-        2: "CLOCK IN",
-        3: "CLOCK OUT"
-    }
-    
     # Convert the numerical prediction to string
-    readable_prediction = label_map.get(int(raw_prediction), f"UNKNOWN (Class {raw_prediction})")
+    readable_prediction = le.inverse_transform([raw_prediction])[0]
     
     # Map classes for the probability labels
     readable_classes = [label_map.get(int(c), f"Class {c}") for c in model.classes_]
@@ -69,7 +62,7 @@ try:
     st.subheader("Model Confidence Level:")
     
     # Create a dictionary from the arrays for direct lookup
-    prob_dict = {label_map.get(int(c), f"Class {c}"): p for c, p in zip(model.classes_, probabilities)}
+    prob_dict = {le.inverse_transform([int(c)])[0]: p for c, p in zip(model.classes_, probabilities)}
     
     # Define a fixed order for the rows
     fixed_order = ["CLOCK IN", "BREAK START", "BREAK END", "CLOCK OUT"]
