@@ -27,9 +27,9 @@ def load_model():
 @st.cache_resource
 def generate_decision_surface(_model, _le):
 
-    hours = np.linspace(8, 19, 40)
-    minutes = np.linspace(0, 59, 40)
-    seconds = np.linspace(0, 59, 20)
+    hours = np.linspace(8, 19, 30)
+    minutes = np.linspace(0, 59, 20)
+    seconds = np.linspace(0, 59, 10)
 
     grid = np.array(
         np.meshgrid(hours, minutes, seconds, indexing="ij")
@@ -107,7 +107,7 @@ def generate_decision_surface(_model, _le):
                 )
             ),
             name="Selected time",
-            showlegend=True
+            showlegend=False
         )
     )
 
@@ -135,7 +135,7 @@ def generate_decision_surface(_model, _le):
 try:
     model, le = load_model()
 
-    left_col, right_col = st.columns([1, 2])
+    left_col, right_col = st.columns([1, 4])
 
     with left_col:
     
@@ -244,7 +244,8 @@ try:
         
         st.plotly_chart(
             fig,
-            use_container_width=True
+            use_container_width=True,
+            height=750
         )
 
 
