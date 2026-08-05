@@ -24,6 +24,7 @@ def load_model():
 
 try:
     model, le = load_model()
+    st.write(le.classes_)
     
     st.subheader("Time of the day:")
     
@@ -51,9 +52,6 @@ try:
     
     # Convert the numerical prediction to string
     readable_prediction = le.inverse_transform([raw_prediction])[0]
-    
-    # Map classes for the probability labels
-    readable_classes = [label_map.get(int(c), f"Class {c}") for c in model.classes_]
     
     # Display the final prediction output
     st.success(f"Predicted Log Type: {readable_prediction}")
