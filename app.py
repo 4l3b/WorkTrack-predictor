@@ -237,7 +237,7 @@ try:
 
     with right_col:
 
-        st.markdown("<h3 style='margin-bottom: -20px;'>Current position in the decision space</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='margin-bottom: -4em;'>Current position in the decision space</h3>", unsafe_allow_html=True)
         
         prediction_color = {
             "clockIn": "blue",
