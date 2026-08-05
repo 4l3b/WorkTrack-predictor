@@ -9,6 +9,19 @@ from skimage.measure import marching_cubes
 # Page configuration
 st.set_page_config(page_title="WorkTrack Log Predictor", layout="wide")
 
+st.markdown(
+    """
+    <style>
+        .block-container {
+            max-width: 1400px;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.title("WorkTrack Log Predictor")
 
 st.write("""
@@ -135,7 +148,7 @@ def generate_decision_surface(_model, _le):
 try:
     model, le = load_model()
 
-    left_col, right_col = st.columns([1, 2])
+    left_col, right_col = st.columns([1, 2], gap="large")
 
     with left_col:
     
