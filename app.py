@@ -24,7 +24,6 @@ def load_model():
 
 try:
     model, le = load_model()
-    st.write(le.classes_)
     
     st.subheader("Time of the day:")
     
