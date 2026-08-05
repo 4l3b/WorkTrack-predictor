@@ -58,8 +58,16 @@ try:
     # Progress bars showing model confidence
     st.subheader("Model Confidence Level:")
     
+    # Convert model class names into readable labels
+    label_display_map = {
+        "clockIn": "CLOCK IN",
+        "clockOut": "CLOCK OUT",
+        "breakStart": "BREAK START",
+        "breakEnd": "BREAK END"
+    }
+    
     # Create a dictionary from the arrays for direct lookup
-    prob_dict = {le.inverse_transform([int(c)])[0]: p for c, p in zip(model.classes_, probabilities)}
+    prob_dict = {label_display_map.get(le.inverse_transform([int(c)])[0], "UNKNOWN"): p for c, p in zip(model.classes_, probabilities)}
     
     # Define a fixed order for the rows
     fixed_order = ["CLOCK IN", "BREAK START", "BREAK END", "CLOCK OUT"]
