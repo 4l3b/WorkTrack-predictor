@@ -135,7 +135,7 @@ def generate_decision_surface(_model, _le):
             yaxis_title="Minute",
             zaxis_title="Second"
         ),
-        height=700,
+        height=500,
         legend=dict(
             title="Log type",
             x=1,
