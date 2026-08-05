@@ -136,7 +136,7 @@ def generate_decision_surface(_model, _le):
         ),
         height=700,
         legend=dict(
-            title="Log type",
+            title="Decision boundaries",
             x=1,
             y=1,
             xanchor="right",
