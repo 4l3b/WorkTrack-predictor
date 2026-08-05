@@ -139,7 +139,7 @@ def generate_decision_surface(_model, _le):
             y=1,
             xanchor="right",
             yanchor="top"
-        )
+        ),
         uirevision="constant"
     )
 
